@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>print</title>
+    <script src="../dist/index.js"></script>
+    <style>
+        #btn {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+            box-shadow: none;
+            border: 1px solid rgb(216,216,216);
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+        #btn:active {
+            background-color: #0062ff;
+        }
+        .box {
+            text-align: center;
+        }
+        .section {
+            margin: 2em;
+        }
+		.author {
+			margin: auto;
+			width: 200px;
+			display: table;
+			color: #888;
+			white-space: nowrap;
+		}
+		.author::before,
+		.author::after {
+			content: '';
+			display: table-cell;
+			border-bottom: 1px solid currentColor;
+			width: 50%;
+			position: relative;
+			top: -10px;
+		}
+		.author::before {
+			left: -5px;
+		}
+		.author::after {
+			right: -5px;
+		}
+		.print-btn {
+			text-align: center;
+		}
+    </style>
+</head>
+<body>
+    <article class="box">
+		<h2 class="title">Facing the Sea With Spring Blossoms</h2>
+		<div class="author">海子</div>
+        <section class="section">
+            <p>From tomorrow on,I will be a happy man.</p>
+            <p>Grooming,chopping and traveling all over the world.</p>
+            <p>From tomorrow on,I will care foodstuff and vegetable.</p>
+            <p>Living in a house towards the sea, with spring blossoms.</p>
+        </section>
+        <section class="section">
+            <p>From tomorrow on,write to each of my dear ones.</p>
+            <p>Telling them of my happiness.</p>
+            <p>What the lightening of happiness has told me.</p>
+            <p>I will spread it to each of them.</p>
+        </section>
+        <section class="section">
+			<p>Give a warm name for every river and every mountain.</p>
+            <p>Strangers,I will also wish you happy.</p>
+            <p>May you have a brilliant future!</p>
+            <p>May you lovers eventually become spouses!</p>
+            <p>May you enjoy happiness in this earthly world!</p>
+            <p>I only wish to face the sea, with spring blossoms.</p>
+        </section>
+	</article>
+	<div class="print-btn">
+		<button type="button" id="btn">print</button>
+	</div>
+    <script>
+        document.querySelector('#btn').onclick = function(){
+            printHTML(document.querySelector('.box').cloneNode(true), '春暖花开')
+        }
+    </script>
+</body>
+</html>
