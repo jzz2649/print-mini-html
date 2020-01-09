@@ -20,6 +20,15 @@ printHTML('<div class="red">print</div>', 'title', '.red{color:red;}');
 
 ```
 
+Or manually download and link hotkeys.js in your HTML, It can also be downloaded via [UNPKG](https://unpkg.com/browse/print-mini-html@1.0.0/dist/):
+
+```
+<script src="https://unpkg.com/print-mini-html@1.0.0/dist/index.js"></script>
+<script type="text/javascript">
+printHTML('<div class="red">print</div>', 'title', '.red{color:red;}')
+</script>
+```
+
 ## arguments
 ```
 printHTML(html, title, cssText);
