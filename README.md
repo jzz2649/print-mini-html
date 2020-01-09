@@ -7,10 +7,10 @@
 You will need Node.js installed on your system.
 
 ```
-npm install --save printHTML
+npm install --save print-mini-html
 ```
 ```
-import printHTML from 'printHTML';
+import printHTML from 'print-mini-html';
 
 printHTML(document.body.cloneNode(true));
 
