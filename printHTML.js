@@ -1,45 +1,121 @@
-function printHTML(html, title, cssText) {
-  var iframe = document.createElement('iframe');
-  var iframeName = 'print_html_iframe';
-  title = title ? '<title>' + title + '</title>': '';
-  iframe.width = 0;
-  iframe.height = 0;
-  iframe.setAttribute('frameborder', 0);
-  iframe.name = iframeName;
-  document.body.appendChild(iframe);
-  var iframeWin = window.frames[iframeName];
-  var iframeDoc = iframeWin.document;
-  iframeDoc.write('<html><head>'+title+'</head><body></body></html>');
-  var style = iframeDoc.createElement('style');
-  var sheets = Array.prototype.slice.call(document.styleSheets);
-  var allCssText = '';
-  for (var i = 0; i < sheets.length; i++) {
-    try {
-      var rules = sheets[i].rules || sheets[i].cssRules;
-      if (rules) {
-        rules = Array.prototype.slice.call(rules);
-        for (var j = 0; j < rules.length; j++) {
-          allCssText += rules[j].cssText;
-        }
+function each(obj, callback) {
+  var list = Array.prototype.slice.call(obj)
+  var len = list.length
+  for (var i = 0; i < len; i++) {
+    callback(list[i], i)
+  }
+}
+
+function template(title, style, body) {
+  title = title || document.title
+  return '<html><head><title>'+ title +'</title>' + style + '</head>' + body + '</html>';
+}
+
+function filterHTML(html) {
+  if (typeof html === 'object') {
+    html = html.outerHTML
+  }
+  var dom = new DOMParser().parseFromString(html, 'text/html');
+  each(dom.images, function(img) {
+    if (img.loading === 'lazy') {
+      img.loading = 'eager';
+    }
+  })
+  return dom.body.outerHTML
+}
+
+function remove(iframe, delay, callback) {
+  var win = iframe.contentWindow;
+  if (win.matchMedia) {
+    var watch = win.matchMedia('print');
+    if (watch.addEventListener) {
+      watch.addEventListener('change', handle);
+    } else {
+      watch.addListener(handle);
+    }
+  } else {
+    setTimeout(handle, 0 + delay);
+  }
+  function handle(e) {
+    if (e && e.matches) {
+      return;
+    }
+    if (watch) {
+      if (watch.removeEventListener) {
+        watch.removeEventListener('change', handle);
+      } else {
+        watch.removeListener(handle);
       }
-    } catch (e) {
-      console.warn("Can't read the css rules of: " + sheets[i].href, e);
+    }
+    iframe.parentNode.removeChild(iframe);
+    callback();
+  }
+}
+
+function getCallback() {
+  var callback = function() {}
+  each(arguments, function(fn) {
+    if (typeof fn === 'function') {
+      callback = fn
+    }
+  })
+  return callback
+}
+
+function printHTML(html, title, cssText, delay, callback) {
+  delay = delay || 0;
+  html = filterHTML(html);
+  var inertCSS = '';
+  var linkCount = 0;
+  var isPrint = false;
+  var timer;
+  each(document.styleSheets, function(sheet) {
+    inertCSS += sheet.ownerNode.outerHTML;
+  })
+  if (cssText) {
+    inertCSS += '<style>' + cssText +'</style>';
+  }
+  var iframe = document.createElement('iframe');
+  iframe.width = 1;
+  iframe.height = 1;
+  iframe.style.position = 'absolute';
+  iframe.style.top = '0';
+  iframe.style.left = '-999px';
+  iframe.setAttribute('frameborder', 0);
+  document.body.appendChild(iframe);
+  var iframeWin = iframe.contentWindow;
+  var iframeDoc = iframeWin.document;
+  iframeDoc.write(template(title, inertCSS, html));
+  each(iframeDoc.images, function(img) {
+    ++linkCount;
+    img.onload = onload;
+    img.onerror = onload;
+  })
+  each(iframeDoc.styleSheets, function(sheet) {
+    if (sheet.ownerNode instanceof HTMLLinkElement) {
+      ++linkCount;
+      sheet.ownerNode.onload = onload;
+      sheet.ownerNode.onerror = onload;
+    }
+  })
+  onload();
+  function onload() {
+    if (--linkCount < 0 && !isPrint) {
+      isPrint = true;
+      timer = setTimeout(function() {
+        flush(delay);
+      }, delay);
     }
   }
-  if (cssText) {
-    allCssText += cssText;
+  function flush(delay) {
+    remove(iframe, delay, getCallback(title, cssText, delay, callback));
+    iframeWin.print();
   }
-  if (allCssText) {
-    style.textContent = allCssText;
-    iframeDoc.head.appendChild(style);
+  return function force() {
+    clearTimeout(timer);
+    isPrint = true;
+    flush(0);
   }
-  if (typeof html === 'object') {
-    iframeDoc.body.appendChild(html)
-  } else {
-    iframeDoc.body.innerHTML = html;
-  }
-  iframeWin.print();
-  iframe.parentNode.removeChild(iframe);
 }
 
 export default printHTML;

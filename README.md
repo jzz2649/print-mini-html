@@ -20,10 +20,10 @@ printHTML('<div class="red">print</div>', 'title', '.red{color:red;}');
 
 ```
 
-Or manually download and link printHTML.js in your HTML, It can also be downloaded via [UNPKG](https://unpkg.com/browse/print-mini-html@1.0.2/dist/):
+Or manually download and link printHTML.js in your HTML, It can also be downloaded via [UNPKG](https://unpkg.com/browse/print-mini-html@1.1.0/dist/):
 
 ```
-<script src="https://unpkg.com/print-mini-html@1.0.2/dist/index.js"></script>
+<script src="https://unpkg.com/print-mini-html@1.1.0/dist/index.js"></script>
 <script type="text/javascript">
 printHTML('<div class="red">print</div>', 'title', '.red{color:red;}')
 </script>
@@ -31,7 +31,7 @@ printHTML('<div class="red">print</div>', 'title', '.red{color:red;}')
 
 ## arguments
 ```
-printHTML(html, title, cssText);
+printHTML(html, title, cssText, delay, callback);
 ```
 
    | field name                | type    | must | description                                      |
@@ -39,3 +39,10 @@ printHTML(html, title, cssText);
    | html                    | HTMLElement \| DOMString  | true   | DOM to print                 |
    | title                 | DOMString | false  | Default document.title |
    | cssText                 | DOMString | false  | add styles |
+   | delay                   | Number | false | delay print |
+   | callback                 | Function | false | print callback |
+
+## return
+```
+function force print
+```
