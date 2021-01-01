@@ -34,7 +34,7 @@ function remove(iframe, delay, callback) {
       watch.addListener(handle);
     }
   } else {
-    setTimeout(handle, 0 + delay);
+    setTimeout(handle, delay + 1);
   }
   function handle(e) {
     if (e && e.matches) {
@@ -102,9 +102,7 @@ function printHTML(html, title, cssText, delay, callback) {
   function onload() {
     if (--linkCount < 0 && !isPrint) {
       isPrint = true;
-      timer = setTimeout(function() {
-        flush(delay);
-      }, delay);
+      timer = setTimeout(flush, delay, delay);
     }
   }
   function flush(delay) {
