@@ -19,7 +19,7 @@
   "author": "jzz2649",
   "license": "MIT",
   "devDependencies": {
-    "rollup": "^1.29.0",
+    "rollup": "^3.29.5",
     "rollup-plugin-uglify": "^6.0.4"
   }
 }
